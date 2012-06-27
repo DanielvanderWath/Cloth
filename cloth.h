@@ -3,11 +3,13 @@
 
 #include <iostream>
 #include "clothparticle.h"
+#include "spring.h"
 
 class Cloth
 {
 	private:
 		ClothParticle *particles;
+		Spring *springs;
 		float *particleVerts;
 		unsigned int pWidth, pHeight;
 		unsigned int VBO;

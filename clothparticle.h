@@ -12,7 +12,7 @@ class ClothParticle
 		ClothParticle( size_t offset);
 		~ClothParticle();
 		void print(float *mesh);
-		void getPosOffset(size_t *pos);
+		size_t getPosOffset();
 };
 
 #endif

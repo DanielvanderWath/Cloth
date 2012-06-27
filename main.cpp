@@ -26,6 +26,12 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
+	if( Spring::initialiseCL())
+	{
+		cout << "Failed to initialise OpenCL\n";
+		exit(1);
+	}
+
 	//while(whatever)
 	{
 		Graphics::clear();

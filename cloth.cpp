@@ -30,7 +30,7 @@ Cloth::Cloth(float xPos, float yPos, float zPos, float dimWidth, float dimHeight
 		particleVerts = new float [partWidth * partHeight * 3];
 	}
 	catch(bad_alloc& exc){
-		CONSTRUCTORFAIL("Not enough memory to create cloth");
+		CONSTRUCTORFAIL("Not enough memory to create cloth - particles");
 	}
 	for ( int i = 0; i < partWidth; i++)
 	{
@@ -40,17 +40,40 @@ Cloth::Cloth(float xPos, float yPos, float zPos, float dimWidth, float dimHeight
 			particleVerts[(j * partWidth + i) * 3 + 1] = j*yStep + yPos;
 			particleVerts[(j * partWidth + i) * 3 + 2] = zPos;
 
-			particles[j * partWidth + i] = (j * partWidth + i) * 3;
+			particles[j * partWidth + i] = ClothParticle((j * partWidth + i) * 3);
 		}
 	}
+
+	//connect the particles with springs
+	//link the particles with each horizontal and vertical neighbour
+	try{
+		springs = new Spring[ (partWidth - 1) * partHeight + (partHeight - 1) * partWidth ];
+	}
+	catch(bad_alloc&){
+		CONSTRUCTORFAIL("Not enough memory to create cloth - springs");
+	}
+	// -1s are so we don't process the far right column, and top row
+	for ( int i = 0; i < partWidth - 1; i++)
+	{
+		for ( int j = 0; j < partHeight - 1; j++)
+		{
+			//link to the particle to the right
+			springs[j * partWidth + i] = Spring(particles[j * partWidth + i].getPosOffset(), particles[j * partWidth + i + 1].getPosOffset());
+
+			//and the one above
+			springs[j * partWidth + i + ((partWidth - 1) * (partHeight - 1))] = Spring(particles[j * partWidth + i].getPosOffset(), particles[j * partWidth + i + partWidth].getPosOffset());
+		}
+	}
+
+	//set the stretch values of the strings
+	Spring::stretches(xStep/2.0f, xStep*2.0f, xStep, yStep/2.0f, yStep*2.0f, yStep);
 }
 
 Cloth::~Cloth()
 {
-	cout << "About to delete particles\n";
 	delete[] particles;
 	delete[] particleVerts;
-	cout << "Deleted particles\n";
+	delete[] springs;
 }
 
 unsigned int Cloth::getVBO()

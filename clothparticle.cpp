@@ -16,7 +16,7 @@ void ClothParticle::print(float *mesh)
 	cout << "Particle at " << (mesh + posOffset)[0] << " : " << (mesh + posOffset)[1] << " : " << (mesh + posOffset)[2] << endl;
 }
 
-void ClothParticle::getPosOffset(size_t *pos)
+size_t ClothParticle::getPosOffset()
 {
-	*pos = posOffset;
+	return posOffset;
 }
